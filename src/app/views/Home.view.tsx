@@ -1,10 +1,12 @@
 import { Col, Divider, Row, Space, Typography } from 'antd';
+import usePageTitle from '../../core/hooks/usePageTitle';
 import CompanyMetrics from '../features/CompanyMetrics';
 import LatestPosts from '../features/LatestPosts';
 
 const { Title, Paragraph } = Typography;
 
 function HomeView() {
+  usePageTitle('Home');
   return (
     <Space
       direction='vertical'

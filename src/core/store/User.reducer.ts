@@ -48,7 +48,7 @@ export default createReducer(initialState, (builder) => {
     .addMatcher(success, (state) => {
       state.fetching = false;
     })
-    .addMatcher(error, (state) => {
+    .addMatcher(error, (state, action) => {
       state.fetching = false;
     })
     .addMatcher(loading, (state) => {

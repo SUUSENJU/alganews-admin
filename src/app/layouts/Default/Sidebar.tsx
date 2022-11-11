@@ -14,7 +14,6 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom';
-import { useEffect } from 'react';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -22,11 +21,6 @@ const { SubMenu } = Menu;
 export default function DefaultLayoutSidebar() {
   const history = useHistory();
   const location = useLocation();
-
-  useEffect(() => {
-    console.log(location);
-    console.log(location.pathname.split('/')[1]);
-  }, [location]);
 
   return (
     <Sider

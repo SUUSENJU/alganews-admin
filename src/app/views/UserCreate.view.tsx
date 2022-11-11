@@ -1,3 +1,11 @@
+import usePageTitle from '../../core/hooks/usePageTitle';
+import UserForm from '../features/UserForm';
+
 export default function UserCreateView() {
-  return <div>{'todo: user create'}</div>;
+  usePageTitle('Cadastro de usuário');
+  return (
+    <>
+      <UserForm />
+    </>
+  );
 }

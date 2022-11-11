@@ -1,10 +1,14 @@
-import { Col, Row } from "antd";
-import UserList from "../features/UserList";
+import { Col, Row } from 'antd';
+import usePageTitle from '../../core/hooks/usePageTitle';
+import UserList from '../features/UserList';
 
 export default function UserListView() {
-  return <Row>
-    <Col xs={24}>
-      <UserList />
-    </Col>
-  </Row>
+  usePageTitle('Consulta de usuários');
+  return (
+    <Row>
+      <Col xs={24}>
+        <UserList />
+      </Col>
+    </Row>
+  );
 }

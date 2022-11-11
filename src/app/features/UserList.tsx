@@ -4,10 +4,11 @@ import {
   Switch,
   Table,
   Tag,
-  Typography,
   Avatar,
   Card,
   Input,
+  Descriptions,
+  Tooltip,
 } from 'antd';
 import { User } from 'danielbonifacio-sdk';
 import format from 'date-fns/format';
@@ -20,6 +21,7 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import { ColumnProps } from 'antd/lib/table';
+import { Link } from 'react-router-dom';
 
 export default function UserList() {
   const { users, fetchUsers, toggleUserStatus, fetching } =
@@ -92,32 +94,82 @@ export default function UserList() {
         loading={fetching}
         dataSource={users}
         pagination={false}
+        rowKey={'id'}
         columns={[
+          {
+            title: 'Usuários',
+            responsive: ['xs'],
+            render(user: User.Summary) {
+              return (
+                <Descriptions column={1} size={'small'}>
+                  <Descriptions.Item label={'Nome'}>
+                    {user.name}
+                  </Descriptions.Item>
+                  <Descriptions.Item label={'Email'}>
+                    {user.email}
+                  </Descriptions.Item>
+                  <Descriptions.Item label={'Criação'}>
+                    {format(
+                      parseISO(user.createdAt),
+                      'dd/MM/yyyy'
+                    )}
+                  </Descriptions.Item>
+                  <Descriptions.Item label={'Perfil'}>
+                    <Tag
+                      color={
+                        user.role === 'MANAGER'
+                          ? 'red'
+                          : 'blue'
+                      }
+                    >
+                      {user.role === 'EDITOR'
+                        ? 'Editor'
+                        : user.role === 'MANAGER'
+                        ? 'Gerente'
+                        : 'Assistente'}
+                    </Tag>
+                  </Descriptions.Item>
+                  <Descriptions.Item label={'Ações'}>
+                    <Button
+                      size='small'
+                      icon={<EyeOutlined />}
+                    />
+                    <Button
+                      size='small'
+                      icon={<EditOutlined />}
+                    />
+                  </Descriptions.Item>
+                </Descriptions>
+              );
+            },
+          },
+          {
+            dataIndex: 'avatarUrls',
+            title: '',
+            width: 48,
+            fixed: 'left',
+            responsive: ['sm'],
+            render(avatarUrls: User.Summary['avatarUrls']) {
+              return (
+                <Avatar
+                  size={'small'}
+                  src={avatarUrls.small}
+                />
+              );
+            },
+          },
           {
             dataIndex: 'name',
             title: 'Nome',
             ...getColumnSearchProps('name', 'nome'),
             width: 160,
-            render(name: string, row) {
-              return (
-                <Space>
-                  <Avatar
-                    size={'small'}
-                    src={row.avatarUrls.small}
-                  />
-                  <Typography.Text
-                    ellipsis
-                    style={{ maxWidth: 120 }}
-                  >
-                    {name}
-                  </Typography.Text>
-                </Space>
-              );
-            },
+            responsive: ['sm'],
+            ellipsis: true,
           },
           {
             dataIndex: 'email',
             title: 'Email',
+            responsive: ['md'],
             ellipsis: true,
             width: 240,
             ...getColumnSearchProps('email', 'Email'),
@@ -126,6 +178,11 @@ export default function UserList() {
             dataIndex: 'role',
             title: 'Perfil',
             align: 'center',
+            responsive: ['sm'],
+            width: 100,
+            sorter(a, b) {
+              return a.role.localeCompare(b.role);
+            },
             render(role) {
               return (
                 <Tag
@@ -146,6 +203,14 @@ export default function UserList() {
             dataIndex: 'createdAt',
             title: 'Criação',
             align: 'center',
+            responsive: ['lg'],
+            sorter(a, b) {
+              return new Date(a.createdAt) >
+                new Date(b.createdAt)
+                ? 1
+                : -1;
+            },
+            width: 120,
             render(createdAt: string) {
               return format(
                 parseISO(createdAt),
@@ -157,13 +222,15 @@ export default function UserList() {
             dataIndex: 'active',
             title: 'Ativo',
             align: 'center',
+            width: 100,
+            responsive: ['sm'],
             render(active: boolean, user) {
               return (
                 <Switch
                   onChange={() => {
                     toggleUserStatus(user);
                   }}
-                  defaultChecked={active}
+                  checked={active}
                 />
               );
             },
@@ -172,17 +239,33 @@ export default function UserList() {
             dataIndex: 'id',
             title: 'Ações',
             align: 'center',
-            render() {
+            width: 100,
+            responsive: ['sm'],
+            render(id: number) {
               return (
                 <>
-                  <Button
-                    size='small'
-                    icon={<EyeOutlined />}
-                  />
-                  <Button
-                    size='small'
-                    icon={<EditOutlined />}
-                  />
+                  <Tooltip
+                    title={'Visualizar usuário'}
+                    placement={'left'}
+                  >
+                    <Link to={`/usuarios/${id}`}>
+                      <Button
+                        size='small'
+                        icon={<EyeOutlined />}
+                      />
+                    </Link>
+                  </Tooltip>
+                  <Tooltip
+                    title={'Editar usuario'}
+                    placement={'right'}
+                  >
+                    <Link to={`/usuarios/edicao/${id}`}>
+                      <Button
+                        size='small'
+                        icon={<EditOutlined />}
+                      />
+                    </Link>
+                  </Tooltip>
                 </>
               );
             },

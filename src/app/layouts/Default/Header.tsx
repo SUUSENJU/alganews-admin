@@ -6,7 +6,7 @@ const { Header } = Layout;
 
 export default function DefaultLayoutHeader() {
   return (
-    <Header className='header'>
+    <Header className='header no-print'>
       <Row
         justify='space-between'
         style={{

@@ -1,3 +1,9 @@
+import PaymentForm from "../features/PaymentForm";
+
 export default function PaymentCreateView() {
-  return <div>todo: payment create view</div>;
+  return (
+    <>
+      <PaymentForm/>
+    </>
+  )
 }

@@ -3,6 +3,7 @@ import {
   PaymentService,
   Post,
 } from 'danielbonifacio-sdk';
+import { ResourceNotFoundError } from 'danielbonifacio-sdk/dist/errors';
 import { useCallback } from 'react';
 import { useState } from 'react';
 
@@ -16,6 +17,12 @@ export default function usePayment() {
   const [fetchingPosts, setFetchingPosts] = useState(false);
   const [fetchingPayment, setFetchingPayment] =
     useState(false);
+  const [approvingPayment, setApprovingPayment] =
+    useState(false);
+
+  const [paymentNotFound, setPaymentNotFound] =
+    useState(false);
+  const [postsNotFound, setPostsNotFound] = useState(false);
 
   const fetchPayment = useCallback(
     async (paymentId: number) => {
@@ -26,8 +33,26 @@ export default function usePayment() {
             paymentId
           );
         setPayment(payment);
+      } catch (error) {
+        if (error instanceof ResourceNotFoundError) {
+          setPaymentNotFound(true);
+          return;
+        }
+        throw error;
       } finally {
         setFetchingPayment(false);
+      }
+    },
+    []
+  );
+
+  const approvePayment = useCallback(
+    async (paymentId: number) => {
+      try {
+        setApprovingPayment(true);
+        await PaymentService.approvePayment(paymentId);
+      } finally {
+        setApprovingPayment(false);
       }
     },
     []
@@ -42,6 +67,12 @@ export default function usePayment() {
             paymentId
           );
         setPosts(posts);
+      } catch (error) {
+        if (error instanceof ResourceNotFoundError) {
+          setPostsNotFound(true);
+          return;
+        }
+        throw error;
       } finally {
         setFetchingPosts(false);
       }
@@ -52,8 +83,12 @@ export default function usePayment() {
   return {
     fetchPayment,
     fetchPosts,
+    approvePayment,
     fetchingPayment,
     fetchingPosts,
+    approvingPayment,
+    paymentNotFound,
+    postsNotFound,
     posts,
     payment,
   };

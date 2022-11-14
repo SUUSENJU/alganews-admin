@@ -2,7 +2,7 @@ import { Descriptions, Table, Tooltip } from 'antd';
 import { Payment, Post } from 'danielbonifacio-sdk';
 
 interface PaymentPostsProps {
-  loading?: boolean
+  loading?: boolean;
   posts: Payment.PostWithEarnings[];
 }
 
@@ -10,6 +10,7 @@ export default function PaymentPosts(props: PaymentPostsProps) {
   return (
     <>
       <Table<Post.WithEarnings>
+        loading={props.loading}
         dataSource={props.posts}
         pagination={false}
         rowKey={'id'}

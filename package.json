@@ -19,6 +19,7 @@
     "craco-less": "^2.0.0",
     "danielbonifacio-sdk": "2.7.2",
     "date-fns": "^2.29.3",
+    "lodash.debounce": "^4.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.4",
@@ -54,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.7",
     "@types/react-router-dom": "^5.3.3"
   }
 }

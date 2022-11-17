@@ -1,4 +1,5 @@
 import {
+  combineReducers,
   configureStore,
   isRejected,
   Middleware,
@@ -6,6 +7,9 @@ import {
 import { notification } from 'antd';
 import PaymentReducer from './Payment.slice';
 import UserReducer from './User.reducer';
+import expenseReducer from './Expense.slice';
+import revenueReducer from './Revenue.slice';
+import entriesCategoryReducer from './EntriesCategory.slice';
 
 const observeActions: Middleware =
   () => (next) => (action) => {
@@ -18,10 +22,17 @@ const observeActions: Middleware =
     next(action);
   };
 
+const cashFlowReducer = combineReducers({
+  expense: expenseReducer,
+  revenue: revenueReducer,
+  category: entriesCategoryReducer,
+});
+
 export const store = configureStore({
   reducer: {
     user: UserReducer,
     payment: PaymentReducer,
+    cashFlow: cashFlowReducer,
   },
   middleware: function (getDefaultMiddlewares) {
     return getDefaultMiddlewares().concat(observeActions);

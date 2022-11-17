@@ -13,11 +13,19 @@ export default function usePayment() {
   );
   const [payment, setPayment] =
     useState<Payment.Detailed>();
+  const [paymentPreview, setPaymentPreview] =
+    useState<Payment.Preview>();
 
   const [fetchingPosts, setFetchingPosts] = useState(false);
   const [fetchingPayment, setFetchingPayment] =
     useState(false);
   const [approvingPayment, setApprovingPayment] =
+    useState(false);
+  const [
+    fetchingPaymentPreview,
+    setFetchingPaymentPreview,
+  ] = useState(false);
+  const [schedulingPayment, setSchedulingPayment] =
     useState(false);
 
   const [paymentNotFound, setPaymentNotFound] =
@@ -80,16 +88,54 @@ export default function usePayment() {
     []
   );
 
+  const fetchPaymentPreview = useCallback(
+    async (paymentPreview: Payment.PreviewInput) => {
+      try {
+        setFetchingPaymentPreview(true);
+        const preview =
+          await PaymentService.getPaymentPreview(
+            paymentPreview
+          );
+        setPaymentPreview(preview);
+      } finally {
+        setFetchingPaymentPreview(false);
+      }
+    },
+    []
+  );
+
+  const schedulePayment = useCallback(
+    async (paymentInput: Payment.Input) => {
+      try {
+        setSchedulingPayment(true);
+        await PaymentService.insertNewPayment(paymentInput);
+      } finally {
+        setSchedulingPayment(false);
+      }
+    },
+    []
+  );
+
+  const clearPaymentPreview = useCallback(() => {
+    setPaymentPreview(undefined);
+  }, []);
+
   return {
     fetchPayment,
     fetchPosts,
     approvePayment,
+    fetchPaymentPreview,
     fetchingPayment,
     fetchingPosts,
     approvingPayment,
+    fetchingPaymentPreview,
     paymentNotFound,
     postsNotFound,
     posts,
     payment,
+    paymentPreview,
+    clearPaymentPreview,
+    schedulePayment,
+    schedulingPayment,
   };
 }

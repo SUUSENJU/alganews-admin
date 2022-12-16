@@ -1,13 +1,6 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Key } from 'antd/lib/table/interface';
-import {
-  CashFlow,
-  CashFlowService,
-} from 'danielbonifacio-sdk';
+import { CashFlow, CashFlowService } from 'danielbonifacio-sdk';
 import moment from 'moment';
 import { RootState } from '.';
 import getThunkStatus from '../utils/getThunkStatus';
@@ -33,12 +26,51 @@ const initialState: ExpenseState = {
 export const getExpenses = createAsyncThunk(
   'cash-flow/expenses/getExpenses',
   async (_, { getState, dispatch }) => {
-    const { query } = (getState() as RootState).cashFlow
-      .expense;
-    const expenses = await CashFlowService.getAllEntries(
-      query
-    );
+    const { query } = (getState() as RootState).cashFlow.expense;
+    const expenses = await CashFlowService.getAllEntries(query);
     await dispatch(storeList(expenses));
+  }
+);
+
+export const createExpense = createAsyncThunk(
+  'cash-flow/expenses/createExpense',
+  async (expense: CashFlow.EntryInput, { dispatch, rejectWithValue }) => {
+    try {
+      await CashFlowService.insertNewEntry(expense);
+      await dispatch(getExpenses());
+    } catch (err) {
+      //@ts-expect-error
+      return rejectWithValue({ ...err });
+    }
+  }
+);
+
+export const updateExpense = createAsyncThunk(
+  'cash-flow/expenses/updateExpense',
+  async (
+    { entry, entryId }: { entry: CashFlow.EntryInput; entryId: number },
+    { dispatch, rejectWithValue }
+  ) => {
+    try {
+      await CashFlowService.updateExistingEntry(entryId, entry);
+      await dispatch(getExpenses());
+    } catch (err) {
+      //@ts-expect-error
+      return rejectWithValue({ ...err });
+    }
+  }
+);
+
+export const removeExpense = createAsyncThunk(
+  'cash-flow/expenses/removeExpense',
+  async (expenseId: number, { dispatch, rejectWithValue }) => {
+    try {
+      await CashFlowService.removeExistingEntry(expenseId);
+      await dispatch(getExpenses());
+    } catch (err) {
+      //@ts-expect-error
+      return rejectWithValue({ ...err });
+    }
   }
 );
 
@@ -62,22 +94,13 @@ const expenseSlice = createSlice({
   initialState,
   name: 'cash-flow/expenses',
   reducers: {
-    storeList(
-      state,
-      action: PayloadAction<CashFlow.EntrySummary[]>
-    ) {
+    storeList(state, action: PayloadAction<CashFlow.EntrySummary[]>) {
       state.list = action.payload;
     },
-    setSelectedExpenses(
-      state,
-      action: PayloadAction<Key[]>
-    ) {
+    setSelectedExpenses(state, action: PayloadAction<Key[]>) {
       state.selected = action.payload;
     },
-    setQuery(
-      state,
-      action: PayloadAction<Partial<CashFlow.Query>>
-    ) {
+    setQuery(state, action: PayloadAction<Partial<CashFlow.Query>>) {
       state.query = {
         ...state.query,
         ...action.payload,
@@ -91,6 +114,8 @@ const expenseSlice = createSlice({
     const { error, loading, success } = getThunkStatus([
       getExpenses,
       removeEntriesInBatch,
+      createExpense,
+      updateExpense,
     ]);
 
     builder

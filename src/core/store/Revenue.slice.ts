@@ -1,13 +1,6 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Key } from 'antd/lib/table/interface';
-import {
-  CashFlow,
-  CashFlowService,
-} from 'danielbonifacio-sdk';
+import { CashFlow, CashFlowService } from 'danielbonifacio-sdk';
 import moment from 'moment';
 import { RootState } from '.';
 import getThunkStatus from '../utils/getThunkStatus';
@@ -33,12 +26,51 @@ const initialState: RevenueState = {
 export const getRevenues = createAsyncThunk(
   'cash-flow/revenues/getRevenues',
   async (_, { getState, dispatch }) => {
-    const { query } = (getState() as RootState).cashFlow
-      .revenue;
-    const revenues = await CashFlowService.getAllEntries(
-      query
-    );
+    const { query } = (getState() as RootState).cashFlow.revenue;
+    const revenues = await CashFlowService.getAllEntries(query);
     await dispatch(storeList(revenues));
+  }
+);
+
+export const createRevenue = createAsyncThunk(
+  'cash-flow/revenues/createRevenue',
+  async (revenue: CashFlow.EntryInput, { dispatch, rejectWithValue }) => {
+    try {
+      await CashFlowService.insertNewEntry(revenue);
+      await dispatch(getRevenues());
+    } catch (err) {
+      //@ts-expect-error
+      return rejectWithValue({ ...err });
+    }
+  }
+);
+
+export const updateRevenue = createAsyncThunk(
+  'cash-flow/revenues/updateRevenue',
+  async (
+    { entry, entryId }: { entry: CashFlow.EntryInput; entryId: number },
+    { dispatch, rejectWithValue }
+  ) => {
+    try {
+      await CashFlowService.updateExistingEntry(entryId, entry);
+      await dispatch(getRevenues());
+    } catch (err) {
+      //@ts-expect-error
+      return rejectWithValue({ ...err });
+    }
+  }
+);
+
+export const removeRevenue = createAsyncThunk(
+  'cash-flow/revenues/removeRevenue',
+  async (revenueId: number, { dispatch, rejectWithValue }) => {
+    try {
+      await CashFlowService.removeExistingEntry(revenueId);
+      await dispatch(getRevenues());
+    } catch (err) {
+      //@ts-expect-error
+      return rejectWithValue({ ...err });
+    }
   }
 );
 
@@ -62,22 +94,13 @@ const revenueSlice = createSlice({
   initialState,
   name: 'cash-flow/revenues',
   reducers: {
-    storeList(
-      state,
-      action: PayloadAction<CashFlow.EntrySummary[]>
-    ) {
+    storeList(state, action: PayloadAction<CashFlow.EntrySummary[]>) {
       state.list = action.payload;
     },
-    setSelectedRevenues(
-      state,
-      action: PayloadAction<Key[]>
-    ) {
+    setSelectedRevenues(state, action: PayloadAction<Key[]>) {
       state.selected = action.payload;
     },
-    setQuery(
-      state,
-      action: PayloadAction<Partial<CashFlow.Query>>
-    ) {
+    setQuery(state, action: PayloadAction<Partial<CashFlow.Query>>) {
       state.query = {
         ...state.query,
         ...action.payload,
@@ -91,6 +114,7 @@ const revenueSlice = createSlice({
     const { error, loading, success } = getThunkStatus([
       getRevenues,
       removeEntriesInBatch,
+      createRevenue,
     ]);
 
     builder

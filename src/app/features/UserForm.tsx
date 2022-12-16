@@ -419,7 +419,7 @@ export default function UserForm(props: UserFormProps) {
                     ]}
                   >
                     <MaskedInput
-                      mask='(00) 00000-0000'
+                      mask='(11) 11111-1111'
                       placeholder={'(27) 99999-0000'}
                     />
                   </Form.Item>
@@ -440,7 +440,7 @@ export default function UserForm(props: UserFormProps) {
                     ]}
                   >
                     <MaskedInput
-                      mask='000.000.000-00'
+                      mask='111.111.111-11'
                       placeholder={'111.222.333-44'}
                     />
                   </Form.Item>

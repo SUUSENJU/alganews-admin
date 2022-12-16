@@ -2,14 +2,14 @@ import { Key } from 'antd/lib/table/interface';
 import { CashFlow } from 'danielbonifacio-sdk';
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { AppDispatch, RootState } from '../store';
 import * as ExpensesActions from '../store/Expense.slice';
 import * as RevenuesActions from '../store/Revenue.slice';
 
 type CashFlowEntryType = CashFlow.EntrySummary['type'];
 
 export default function useCashFlow(type: CashFlowEntryType) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const query = useSelector((s: RootState) =>
     type === 'EXPENSE' ? s.cashFlow.expense.query : s.cashFlow.revenue.query
@@ -31,7 +31,6 @@ export default function useCashFlow(type: CashFlowEntryType) {
   const fetchEntries = useCallback(
     () =>
       dispatch(
-        //@ts-expect-error
         type === 'EXPENSE'
           ? ExpensesActions.getExpenses()
           : RevenuesActions.getRevenues()
@@ -39,10 +38,45 @@ export default function useCashFlow(type: CashFlowEntryType) {
     [dispatch, type]
   );
 
+  const createEntry = useCallback(
+    (entry: CashFlow.EntryInput) =>
+      dispatch(
+        type === 'EXPENSE'
+          ? ExpensesActions.createExpense(entry)
+          : RevenuesActions.createRevenue(entry)
+      ).unwrap(),
+    [dispatch, type]
+  );
+
+  const updateEntry = useCallback(
+    (entryId: number, entry: CashFlow.EntryInput) =>
+      dispatch(
+        type === 'EXPENSE'
+          ? ExpensesActions.updateExpense({
+              entryId: entryId,
+              entry: entry,
+            })
+          : RevenuesActions.updateRevenue({
+              entryId: entryId,
+              entry: entry,
+            })
+      ).unwrap(),
+    [dispatch, type]
+  );
+
+  const removeEntry = useCallback(
+    (entryId: number) =>
+      dispatch(
+        type === 'EXPENSE'
+          ? ExpensesActions.removeExpense(entryId)
+          : RevenuesActions.removeRevenue(entryId)
+      ).unwrap(),
+    [dispatch, type]
+  );
+
   const removeEntries = useCallback(
     (ids: number[]) =>
       dispatch(
-        //@ts-expect-error
         type === 'EXPENSE'
           ? ExpensesActions.removeEntriesInBatch(ids)
           : RevenuesActions.removeEntriesInBatch(ids)
@@ -63,7 +97,6 @@ export default function useCashFlow(type: CashFlowEntryType) {
   const setQuery = useCallback(
     (query: Partial<CashFlow.Query>) =>
       dispatch(
-        //@ts-expect-error
         type === 'EXPENSE'
           ? ExpensesActions.setQuery(query)
           : RevenuesActions.setQuery(query)
@@ -80,5 +113,8 @@ export default function useCashFlow(type: CashFlowEntryType) {
     removeEntries,
     setQuery,
     setSelected,
+    createEntry,
+    updateEntry,
+    removeEntry,
   };
 }

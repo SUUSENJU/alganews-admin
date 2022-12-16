@@ -11,16 +11,26 @@ import expenseReducer from './Expense.slice';
 import revenueReducer from './Revenue.slice';
 import entriesCategoryReducer from './EntriesCategory.slice';
 
-const observeActions: Middleware =
-  () => (next) => (action) => {
-    if (isRejected(action)) {
+const observeActions: Middleware = () => (next) => (action) => {
+  if (isRejected(action)) {
+    const ignoredActions = [
+      'cash-flow/categories/createCategory/rejected',
+      'cash-flow/categories/deleteCategory/rejected',
+      'cash-flow/expenses/createExpense/rejected',
+      'cash-flow/revenues/createRevenue/rejected',
+    ];
+
+    const shouldNotify = !ignoredActions.includes(action.type);
+
+    if (shouldNotify) {
       notification.error({
         message: action.error.message,
       });
     }
+  }
 
-    next(action);
-  };
+  next(action);
+};
 
 const cashFlowReducer = combineReducers({
   expense: expenseReducer,

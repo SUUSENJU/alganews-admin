@@ -5,8 +5,12 @@ import { DeleteOutlined, EyeOutlined, EditOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import useCashFlow from '../../core/hooks/useCashFlow';
 import transformIntoBrl from '../../core/utils/transformIntoBrl';
+import DoubleConfirm from '../components/DoubleConfirm';
 
-interface EntriesListProps {}
+interface EntriesListProps {
+  onEdit: (entryId: number) => any;
+  onDetail: (entryId: number) => any;
+}
 
 export default function EntriesList(props: EntriesListProps) {
   const {
@@ -17,6 +21,7 @@ export default function EntriesList(props: EntriesListProps) {
     query,
     selected,
     setSelected,
+    removeEntry,
   } = useCashFlow('EXPENSE');
 
   useEffect(() => {
@@ -88,17 +93,41 @@ export default function EntriesList(props: EntriesListProps) {
           dataIndex: 'id',
           title: 'Ações',
           align: 'right',
-          render(id: number) {
+          render(id: number, record) {
             return (
               <Space>
+                <DoubleConfirm
+                  popConfirmTitle={'Remover despesa?'}
+                  modalTitle={'Deseja mesmo remover essa despesa?'}
+                  modalContent={
+                    'Remover uma despesa pode gerar um impacto negativo no gráfico de receitas e despesas. Esta ação é irreversível'
+                  }
+                  onConfirm={async () => {
+                    await removeEntry(id);
+                  }}
+                  disabled={!record.canBeDeleted}
+                >
+                  <Button
+                    type={'text'}
+                    size={'small'}
+                    icon={<DeleteOutlined />}
+                    danger
+                  />
+                </DoubleConfirm>
                 <Button
                   type={'text'}
                   size={'small'}
-                  icon={<DeleteOutlined />}
-                  danger
+                  icon={<EditOutlined />}
+                  onClick={() => props.onEdit(id)}
                 />
-                <Button type={'text'} size={'small'} icon={<EditOutlined />} />
-                <Button type={'text'} size={'small'} icon={<EyeOutlined />} />
+                <Button
+                  type={'text'}
+                  size={'small'}
+                  icon={<EyeOutlined />}
+                  onClick={() => {
+                    props.onDetail(id);
+                  }}
+                />
               </Space>
             );
           },

@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 
 import HomeView from './views/Home.view';
 import UserCreateView from './views/UserCreate.view';
@@ -13,8 +13,11 @@ import CustomError from 'danielbonifacio-sdk/dist/CustomError';
 import { message, notification } from 'antd';
 import UserDetailsView from './views/UserDetails.view';
 import PaymentDetailsView from './views/PaymentDetails.view';
+import AuthService from '../auth/Authorization.service';
 
 export default function Routes() {
+  const history = useHistory();
+
   useEffect(() => {
     window.onunhandledrejection = ({ reason }) => {
       if (reason instanceof CustomError) {
@@ -46,6 +49,49 @@ export default function Routes() {
       window.onunhandledrejection = null;
     };
   }, []);
+
+  useEffect(() => {
+    async function identify() {
+      const isInAuthorizationRoute = window.location.pathname === '/authorize'
+      const code = new URLSearchParams(window.location.search).get('code')
+      
+      const codeVerifier = AuthService.getCodeVerifier();
+      const accessToken = AuthService.getAccessToken();
+
+      if (!accessToken && !isInAuthorizationRoute) {
+        AuthService.imperativelySendToLoginScreen()
+      }
+
+      if (isInAuthorizationRoute) {
+        if (!code) {
+          notification.error({
+            message: 'Código não foi informado'
+          })
+          return;
+        }
+
+        if (!codeVerifier) {
+          // necessario fazer logout
+          return;
+        }
+
+        // busca o primeiro token de acesso
+        const { access_token, refresh_token } = await AuthService.getFirstAccessTokens({
+          code,
+          codeVerifier,
+          redirectUri: 'http://localhost:3000/authorize'
+        })
+
+        AuthService.setAccessToken(access_token)
+        AuthService.setRefreshToken(refresh_token)
+
+        history.push('/')
+      }
+    }
+
+    identify()
+  }, [])
+
   return (
     <Switch>
       <Route path={'/'} exact component={HomeView} />

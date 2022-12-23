@@ -6,6 +6,14 @@ const authServer = axios.create({
   baseURL: 'http://localhost:8081',
 });
 
+authServer.interceptors.response.use(undefined, async (error) => {
+  if (error?.response?.status === 401) {
+    AuthService.imperativelySendToLogout();
+  }
+
+  return Promise.reject(error);
+});
+
 export interface OAuthAuthorizationTokenResponse {
   access_token: string;
   refresh_token: string;
@@ -16,6 +24,31 @@ export interface OAuthAuthorizationTokenResponse {
 }
 
 export default class AuthService {
+  public static imperativelySendToLogout() {
+    window.localStorage.clear();
+    window.location.href = `http://localhost:8081/logout?redirect=http://localhost:3000`;
+  }
+
+  public static async getNewToken(config: {
+    refreshToken: string;
+    codeVerifier: string;
+  }) {
+    const formUrlEncoded = qs.stringify({
+      refresh_token: config.refreshToken,
+      code_verifier: config.codeVerifier,
+      grant_type: 'refresh_token',
+      client_id: 'alganews-admin',
+    });
+
+    return authServer
+      .post<OAuthAuthorizationTokenResponse>('/oauth/token', formUrlEncoded, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      })
+      .then((res) => res.data);
+  }
+
   public static async getFirstAccessTokens(config: {
     code: string;
     codeVerifier: string;

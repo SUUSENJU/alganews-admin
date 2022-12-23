@@ -52,21 +52,21 @@ export default function Routes() {
 
   useEffect(() => {
     async function identify() {
-      const isInAuthorizationRoute = window.location.pathname === '/authorize'
-      const code = new URLSearchParams(window.location.search).get('code')
-      
+      const isInAuthorizationRoute = window.location.pathname === '/authorize';
+      const code = new URLSearchParams(window.location.search).get('code');
+
       const codeVerifier = AuthService.getCodeVerifier();
       const accessToken = AuthService.getAccessToken();
 
       if (!accessToken && !isInAuthorizationRoute) {
-        AuthService.imperativelySendToLoginScreen()
+        AuthService.imperativelySendToLoginScreen();
       }
 
       if (isInAuthorizationRoute) {
         if (!code) {
           notification.error({
-            message: 'Código não foi informado'
-          })
+            message: 'Código não foi informado',
+          });
           return;
         }
 
@@ -76,21 +76,22 @@ export default function Routes() {
         }
 
         // busca o primeiro token de acesso
-        const { access_token, refresh_token } = await AuthService.getFirstAccessTokens({
-          code,
-          codeVerifier,
-          redirectUri: 'http://localhost:3000/authorize'
-        })
+        const { access_token, refresh_token } =
+          await AuthService.getFirstAccessTokens({
+            code,
+            codeVerifier,
+            redirectUri: 'http://localhost:3000/authorize',
+          });
 
-        AuthService.setAccessToken(access_token)
-        AuthService.setRefreshToken(refresh_token)
+        AuthService.setAccessToken(access_token);
+        AuthService.setRefreshToken(refresh_token);
 
-        history.push('/')
+        history.push('/');
       }
     }
 
-    identify()
-  }, [])
+    identify();
+  }, []);
 
   return (
     <Switch>

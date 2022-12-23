@@ -1,8 +1,4 @@
-import {
-  isFulfilled,
-  isPending,
-  isRejected,
-} from '@reduxjs/toolkit';
+import { isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
 import { AnyAsyncThunk } from '@reduxjs/toolkit/dist/matchers';
 
 export default function getThunkStatus(

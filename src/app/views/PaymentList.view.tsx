@@ -80,7 +80,6 @@ export default function PaymentListView() {
             format={'MMMM - YYYY'}
             placeholder={'Filtrar por mês'}
             onChange={(date) => {
-              //@ts-expect-error
               setQuery({
                 scheduledToYearMonth: date ? date.format('YYYY-MM') : undefined,
               });
@@ -102,7 +101,6 @@ export default function PaymentListView() {
         }}
         pagination={{
           current: query.page ? query.page + 1 : 1,
-          //@ts-expect-error
           onChange: (page) => setQuery({ page: page - 1 }),
           total: payments?.totalElements,
           pageSize: query.size,

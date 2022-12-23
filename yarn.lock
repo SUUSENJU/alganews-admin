@@ -4905,10 +4905,10 @@ damerau-levenshtein@^1.0.8:
   resolved "https://registry.npmjs.org/damerau-levenshtein/-/damerau-levenshtein-1.0.8.tgz"
   integrity sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==
 
-danielbonifacio-sdk@2.7.2:
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/danielbonifacio-sdk/-/danielbonifacio-sdk-2.7.2.tgz#c879cb80f2f2956f42f8819cab082cd24a77ffba"
-  integrity sha512-p/BpJj7DeyqPNymLv0M8Zf5/f2pGfIPNz7Do4jtWEZNlTVNfv8xBZzO+L8Od1wgl1M3CNAl0OHnfWm1PD1LbBQ==
+danielbonifacio-sdk@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/danielbonifacio-sdk/-/danielbonifacio-sdk-3.0.0.tgz#9785e9a39df1ef479d50beed20cc6440c41d0b20"
+  integrity sha512-2z+lHSrnFdEZpAESKOa4kfrVG+/CHkVBMKdcKBjZWranFy6Vd/BpDS2zFs9+457MWCEFNUfGjGBsR+OpBnDMRQ==
   dependencies:
     axios "^0.21.1"
     date-fns "^2.22.1"
@@ -7640,6 +7640,11 @@ jsonpointer@^5.0.0:
   dependencies:
     array-includes "^3.1.5"
     object.assign "^4.1.3"
+
+jwt-decode@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-3.1.2.tgz#3fb319f3675a2df0c2895c8f5e9fa4b67b04ed59"
+  integrity sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==
 
 kdbush@^3.0.0:
   version "3.0.0"
@@ -11014,10 +11019,10 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-suusenju-sdk@2.7.2:
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/suusenju-sdk/-/suusenju-sdk-2.7.2.tgz#f9c415e29ab0e3d708b287bcdb34610ab6f06fec"
-  integrity sha512-V7njUkAQ/3tG0gny3y/TgjW2eR+3TTFG/mnPD3usa4HWlu8TWaFDSA+2/MoOoN15+vfvTNWhlgWjg4/0oQETKw==
+suusenju-sdk@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/suusenju-sdk/-/suusenju-sdk-3.0.0.tgz#6a2b5198291c2f492d6c9d6e0565094b19001791"
+  integrity sha512-ARzeGVjvyf91j66i1NXhg5OH/tvZs41oZ59k+aQQf9IvA3KXjErmTpI+4FwBhYp9J9HE0xVjKdwjpw3n7u5hXg==
   dependencies:
     axios "^1.1.2"
     date-fns "^2.29.3"

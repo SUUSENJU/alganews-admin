@@ -1,6 +1,6 @@
 import { User } from 'danielbonifacio-sdk';
 
-declare namespace Authentication {
+declare namespace Authorization {
   export type AccessTokenDecodedBody = {
     'alganews:user_full_name': string;
     'alganews:user_id': number;

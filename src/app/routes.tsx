@@ -14,9 +14,14 @@ import { message, notification } from 'antd';
 import UserDetailsView from './views/UserDetails.view';
 import PaymentDetailsView from './views/PaymentDetails.view';
 import AuthService from '../auth/Authorization.service';
+import jwtDecode from 'jwt-decode';
+import useAuth from '../core/hooks/useAuth';
+import { Authorization } from '../auth/Auth';
 
 export default function Routes() {
   const history = useHistory();
+
+  const { fetchUser } = useAuth();
 
   useEffect(() => {
     window.onunhandledrejection = ({ reason }) => {
@@ -86,12 +91,21 @@ export default function Routes() {
         AuthService.setAccessToken(access_token);
         AuthService.setRefreshToken(refresh_token);
 
+        const decodedToken: Authorization.AccessTokenDecodedBody =
+          jwtDecode(access_token);
+        fetchUser(decodedToken['alganews:user_id']);
         history.push('/');
+      }
+
+      if (accessToken) {
+        const decodedToken: Authorization.AccessTokenDecodedBody =
+          jwtDecode(accessToken);
+        fetchUser(decodedToken['alganews:user_id']);
       }
     }
 
     identify();
-  }, []);
+  }, [history, fetchUser]);
 
   return (
     <Switch>

@@ -161,12 +161,12 @@ export default function PaymentForm() {
                 return (
                   //@ts-expect-error
                   option?.children
-                  //@ts-expect-error
+                    //@ts-expect-error
                     .normalize('NFD')
                     .replace(/[\u0300-\u036f]/g, '')
                     .toLowerCase()
                     .indexOf(input.toLowerCase()) >= 0 ||
-                    //@ts-expect-error
+                  //@ts-expect-error
                   (option?.children as string)
                     .toLowerCase()
                     .indexOf(input.toLowerCase()) >= 0

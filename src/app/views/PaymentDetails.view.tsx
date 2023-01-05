@@ -3,6 +3,7 @@ import { Button, Card, Divider, notification, Space, Tag } from 'antd';
 import moment from 'moment';
 import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import useBreadcrumb from '../../core/hooks/useBreadcrumb';
 import usePageTitle from '../../core/hooks/usePageTitle';
 import usePayment from '../../core/hooks/usePayment';
 import DoubleConfirm from '../components/DoubleConfirm';
@@ -13,6 +14,8 @@ import PaymentPosts from '../features/PaymentPosts';
 
 export default function PaymentDetailsView() {
   usePageTitle('Detalhes do pagamento');
+  useBreadcrumb('Pagamentos/Consulta/Detalhes do pagamento');
+
   const params = useParams<{ id: string }>();
   const history = useHistory();
 

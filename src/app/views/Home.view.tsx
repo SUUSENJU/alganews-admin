@@ -1,4 +1,5 @@
 import { Col, Divider, Row, Space, Typography } from 'antd';
+import useBreadcrumb from '../../core/hooks/useBreadcrumb';
 import usePageTitle from '../../core/hooks/usePageTitle';
 import CompanyMetrics from '../features/CompanyMetrics';
 import LatestPosts from '../features/LatestPosts';
@@ -7,6 +8,7 @@ const { Title, Paragraph } = Typography;
 
 function HomeView() {
   usePageTitle('Home');
+  useBreadcrumb('Home');
   return (
     <Space
       direction='vertical'

@@ -28,9 +28,12 @@ import NotFoundError from '../components/NotFoundError';
 import usePageTitle from '../../core/hooks/usePageTitle';
 import { useState } from 'react';
 import formatPhone from '../../core/utils/formatPhone';
+import useBreadcrumb from '../../core/hooks/useBreadcrumb';
 
 export default function UserDetailsView() {
   usePageTitle('Detalhes do usuário');
+  useBreadcrumb('Usuários/Consulta/Detalhes do usuário');
+
   const params = useParams<{ id: string }>();
   const [page, setPage] = useState(0);
   const { lg } = useBreakpoint();

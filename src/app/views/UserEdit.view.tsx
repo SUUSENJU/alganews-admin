@@ -8,6 +8,7 @@ import {
   useHistory,
   useParams,
 } from 'react-router-dom';
+import useBreadcrumb from '../../core/hooks/useBreadcrumb';
 import usePageTitle from '../../core/hooks/usePageTitle';
 import useUser from '../../core/hooks/useUser';
 import NotFoundError from '../components/NotFoundError';
@@ -15,6 +16,7 @@ import UserForm from '../features/UserForm';
 
 export default function UserEditView() {
   usePageTitle('Edição do usuário');
+  useBreadcrumb('Usuários/Consulta/Edição de usuário')
   const params = useParams<{ id: string }>();
   const history = useHistory();
 

@@ -139,8 +139,16 @@ export default function UserList() {
                     </Tag>
                   </Descriptions.Item>
                   <Descriptions.Item label={'Ações'}>
-                    <Button size='small' icon={<EyeOutlined />} />
-                    <Button size='small' icon={<EditOutlined />} />
+                    <Tooltip title={'Visualizar usuário'}>
+                      <Link to={`/usuarios/${user.id}`}>
+                        <Button size='small' icon={<EyeOutlined />} />
+                      </Link>
+                    </Tooltip>
+                    <Tooltip>
+                      <Link to={`usuarios/edicao/${user.id}`}>
+                        <Button size='small' icon={<EditOutlined />} />
+                      </Link>
+                    </Tooltip>
                   </Descriptions.Item>
                 </Descriptions>
               );

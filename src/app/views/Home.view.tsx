@@ -1,4 +1,5 @@
 import { Col, Divider, Row, Space, Typography } from 'antd';
+import useAuth from '../../core/hooks/useAuth';
 import useBreadcrumb from '../../core/hooks/useBreadcrumb';
 import usePageTitle from '../../core/hooks/usePageTitle';
 import CompanyMetrics from '../features/CompanyMetrics';
@@ -9,6 +10,9 @@ const { Title, Paragraph } = Typography;
 function HomeView() {
   usePageTitle('Home');
   useBreadcrumb('Home');
+
+  const { user } = useAuth();
+
   return (
     <Space
       direction='vertical'
@@ -17,7 +21,7 @@ function HomeView() {
     >
       <Row>
         <Col span={24}>
-          <Title level={2}>Olá, José Sousa</Title>
+          <Title level={2}>Olá, {user?.name}</Title>
           <Paragraph>
             Este é o resumo da empresa nos últimos doze
             meses

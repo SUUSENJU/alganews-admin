@@ -1,4 +1,4 @@
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 
 import HomeView from './views/Home.view';
 import UserCreateView from './views/UserCreate.view';
@@ -16,12 +16,15 @@ import PaymentDetailsView from './views/PaymentDetails.view';
 import AuthService from '../auth/Authorization.service';
 import jwtDecode from 'jwt-decode';
 import useAuth from '../core/hooks/useAuth';
+import { useMemo } from 'react';
+import GlobalLoading from './components/GlobalLoading';
 import { Authorization } from '../auth/Auth';
 
 export default function Routes() {
   const history = useHistory();
+  const location = useLocation();
 
-  const { fetchUser } = useAuth();
+  const { fetchUser, user } = useAuth();
 
   useEffect(() => {
     window.onunhandledrejection = ({ reason }) => {
@@ -72,11 +75,12 @@ export default function Routes() {
           notification.error({
             message: 'Código não foi informado',
           });
+          AuthService.imperativelySendToLoginScreen();
           return;
         }
 
         if (!codeVerifier) {
-          // necessario fazer logout
+          AuthService.imperativelySendToLogout();
           return;
         }
 
@@ -106,6 +110,13 @@ export default function Routes() {
 
     identify();
   }, [history, fetchUser]);
+
+  const isAuthorizationRoute = useMemo(
+    () => location.pathname === '/authorize',
+    [location.pathname]
+  );
+
+  if (isAuthorizationRoute || !user) return <GlobalLoading />;
 
   return (
     <Switch>
